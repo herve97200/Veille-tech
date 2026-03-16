@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Veille Tech & Normes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F7F6F2;--surface:#FFF;--surface2:#EFEDE6;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);
+  --text:#18181A;--text2:#52514E;--text3:#8C8B87;
+  --r:8px;--rl:13px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111110;--surface:#1A1A18;--surface2:#222220;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#EDECE8;--text2:#9E9D99;--text3:#636260;
+}}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:200;background:var(--bg);border-bottom:0.5px solid var(--border);backdrop-filter:blur(14px);}
+.topbar-inner{max-width:1280px;margin:0 auto;padding:0 1.5rem;height:52px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
+.logo-mark{width:28px;height:28px;border-radius:6px;background:var(--text);display:flex;align-items:center;justify-content:center;}
+.logo-mark svg{width:14px;height:14px;color:var(--bg);}
+.logo-name{font-family:'Fraunces',serif;font-size:16px;font-weight:300;color:var(--text);letter-spacing:-.2px;}
+.topbar-right{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:#3B6D11;animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
+.live-txt{font-size:11px;font-family:'DM Mono',monospace;color:#3B6D11;font-weight:500;}
+.badge{font-size:10px;font-family:'DM Mono',monospace;padding:3px 8px;border-radius:4px;cursor:default;}
+.badge-tr{background:#E1F5EE;color:#085041;}
+.badge-report{background:#EEEDFE;color:#3C3489;cursor:pointer;border:none;}
+.badge-report:hover{opacity:.8;}
+@media(prefers-color-scheme:dark){.badge-tr{background:#04342C;color:#9FE1CB;}.badge-report{background:#26215C;color:#CECBF6;}}
+.btn{display:flex;align-items:center;gap:5px;font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 12px;border-radius:var(--r);border:0.5px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn:hover{background:var(--surface2);color:var(--text);}
+.btn:disabled{opacity:.35;pointer-events:none;}
+.btn svg{width:12px;height:12px;flex-shrink:0;}
+.btn.spin svg{animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn-dark{background:var(--text);color:var(--bg);border-color:var(--text);}
+.btn-dark:hover{opacity:.85;background:var(--text);color:var(--bg);}
+
+/* ── COUNTDOWN ── */
+.countdown-bar{background:var(--surface);border-bottom:0.5px solid var(--border);padding:.5rem 1.5rem;}
+.countdown-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.countdown-left{display:flex;align-items:center;gap:10px;}
+.countdown-icon{width:28px;height:28px;border-radius:6px;background:#EEEDFE;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.countdown-icon svg{width:13px;height:13px;color:#3C3489;}
+@media(prefers-color-scheme:dark){.countdown-icon{background:#26215C;}.countdown-icon svg{color:#CECBF6;}}
+.countdown-txt{font-size:12px;color:var(--text2);}
+.countdown-txt strong{color:var(--text);font-weight:500;}
+.countdown-timer{font-size:13px;font-family:'DM Mono',monospace;font-weight:500;color:var(--text);min-width:60px;}
+.countdown-timer.urgent{color:#A32D2D;}
+@media(prefers-color-scheme:dark){.countdown-timer.urgent{color:#F7C1C1;}}
+
+/* ── API BANNER ── */
+.api-banner{background:var(--surface);border-bottom:0.5px solid var(--border);padding:.65rem 1.5rem;}
+.api-banner-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.api-banner label{font-size:12px;color:var(--text2);white-space:nowrap;}
+.api-banner input{flex:1;min-width:200px;max-width:360px;font-family:'DM Mono',monospace;font-size:12px;padding:6px 10px;border-radius:var(--r);border:0.5px solid var(--border2);background:var(--surface2);color:var(--text);outline:none;}
+.api-banner input:focus{border-color:var(--text);}
+.api-hint{font-size:11px;color:var(--text3);}
+.api-hint a{color:var(--text2);text-decoration:underline;}
+
+/* ── HERO ── */
+.hero{max-width:1280px;margin:0 auto;padding:2rem 1.5rem 1.25rem;border-bottom:0.5px solid var(--border);}
+.hero-inner{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(26px,4vw,44px);font-weight:300;line-height:1.1;letter-spacing:-1px;}
+.hero h1 em{font-style:italic;}
+.hero-stat{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;line-height:1.9;text-align:right;}
+.hero-stat strong{color:var(--text);font-weight:500;}
+
+/* ── PROGRESS ── */
+.progress-wrap{height:2px;background:var(--border);overflow:hidden;}
+.progress-fill{height:100%;background:var(--text);transition:width .3s ease;width:0%;}
+
+/* ── MAIN ── */
+.main{max-width:1280px;margin:0 auto;padding:1.5rem;display:grid;grid-template-columns:210px 1fr;gap:1.5rem;align-items:start;}
+@media(max-width:800px){.main{grid-template-columns:1fr;}.sidebar{display:none;}}
+
+/* ── SIDEBAR ── */
+.sidebar{position:sticky;top:68px;}
+.sb-section{margin-bottom:1.5rem;}
+.sb-title{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;}
+.cat-btn{display:flex;align-items:center;gap:7px;width:100%;padding:7px 10px;border-radius:var(--r);border:none;background:transparent;cursor:pointer;text-align:left;transition:background .12s;font-family:'DM Sans',sans-serif;}
+.cat-btn:hover{background:var(--surface2);}
+.cat-btn.active{background:var(--surface2);font-weight:500;}
+.cat-btn .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.cat-btn span{font-size:13px;color:var(--text);}
+.cat-btn .cnt{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;margin-left:auto;}
+.src-item{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--border);}
+.src-item:last-child{border:none;}
+.src-name{font-size:11px;color:var(--text2);}
+.src-cnt{font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);}
+
+/* ── REFRESH INDICATOR ── */
+.next-refresh{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;padding:6px 10px;background:var(--surface2);border-radius:var(--r);text-align:center;margin-top:8px;}
+
+/* ── FEED ── */
+.feed-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:8px;}
+.feed-title{font-size:13px;font-weight:500;color:var(--text);}
+.feed-meta{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
+.feed-grid{display:flex;flex-direction:column;border:0.5px solid var(--border);border-radius:var(--rl);overflow:hidden;}
+.article{background:var(--surface);padding:.9rem 1.1rem;border-bottom:0.5px solid var(--border);display:grid;grid-template-columns:1fr auto;gap:8px;align-items:start;text-decoration:none;color:inherit;transition:background .12s;}
+.article:last-child{border-bottom:none;}
+.article:hover{background:var(--surface2);}
+.art-top{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap;}
+.cat-tag{font-size:9px;font-weight:500;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:3px;text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;}
+.src-tag{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;}
+.art-time{font-size:10px;color:var(--text3);font-family:'DM Mono',monospace;}
+.fr-flag{font-size:9px;padding:1px 5px;border-radius:3px;background:#E6F1FB;color:#0C447C;font-family:'DM Mono',monospace;font-weight:500;}
+@media(prefers-color-scheme:dark){.fr-flag{background:#042C53;color:#B5D4F4;}}
+.article h3{font-size:13px;font-weight:500;line-height:1.45;color:var(--text);margin-bottom:3px;}
+.article p{font-size:12px;color:var(--text2);line-height:1.6;}
+.translating{font-size:11px;color:var(--text3);font-style:italic;}
+.art-arrow{color:var(--text3);font-size:16px;margin-top:2px;}
+
+/* ── TAG COLORS ── */
+.t-ia{background:#EEEDFE;color:#3C3489;}.t-norm{background:#E1F5EE;color:#085041;}
+.t-infra{background:#E6F1FB;color:#0C447C;}.t-sec{background:#FAECE7;color:#712B13;}
+.t-data{background:#FAEEDA;color:#633806;}.t-dev{background:#EAF3DE;color:#27500A;}
+.t-general{background:#F1EFE8;color:#444441;}
+@media(prefers-color-scheme:dark){
+  .t-ia{background:#26215C;color:#CECBF6;}.t-norm{background:#04342C;color:#9FE1CB;}
+  .t-infra{background:#042C53;color:#B5D4F4;}.t-sec{background:#4A1B0C;color:#F5C4B3;}
+  .t-data{background:#412402;color:#FAC775;}.t-dev{background:#173404;color:#C0DD97;}
+  .t-general{background:#2C2C2A;color:#D3D1C7;}
+}
+.d-ia{background:#7F77DD;}.d-norm{background:#1D9E75;}.d-infra{background:#378ADD;}
+.d-sec{background:#D85A30;}.d-data{background:#BA7517;}.d-dev{background:#639922;}.d-general{background:#888780;}
+
+/* ── REPORT TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--surface);border:0.5px solid var(--border2);border-radius:var(--rl);padding:1rem 1.25rem;box-shadow:0 4px 24px rgba(0,0,0,.12);display:none;max-width:320px;animation:slideUp .3s ease;}
+.toast.visible{display:block;}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.toast-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.toast-icon{width:30px;height:30px;border-radius:6px;background:#EEEDFE;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.toast-icon svg{width:14px;height:14px;color:#3C3489;}
+@media(prefers-color-scheme:dark){.toast-icon{background:#26215C;}.toast-icon svg{color:#CECBF6;}}
+.toast-title{font-size:13px;font-weight:500;}
+.toast-body{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px;}
+.toast-actions{display:flex;gap:7px;}
+.toast-close{position:absolute;top:10px;right:12px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;line-height:1;}
+
+/* ── SKELETON ── */
+.skel-list{border:0.5px solid var(--border);border-radius:var(--rl);overflow:hidden;}
+.skel-item{background:var(--surface);padding:.9rem 1.1rem;border-bottom:0.5px solid var(--border);}
+.skel-item:last-child{border:none;}
+.skel{border-radius:4px;background:var(--surface2);animation:shim 1.3s ease-in-out infinite;}
+@keyframes shim{0%,100%{opacity:1}50%{opacity:.4}}
+
+.empty-state{background:var(--surface);border:0.5px solid var(--border);border-radius:var(--rl);padding:2.5rem;text-align:center;}
+.empty-state p{font-size:13px;color:var(--text2);line-height:1.7;margin-top:8px;}
+
+footer{max-width:1280px;margin:2rem auto 0;padding:1.25rem 1.5rem;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+footer span{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;}
+</style>
+</head>
+<body>
+
+<!-- TOAST RAPPORT -->
+<div class="toast" id="reportToast">
+  <button class="toast-close" onclick="document.getElementById('reportToast').classList.remove('visible')">×</button>
+  <div class="toast-header">
+    <div class="toast-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 1h5.5L11 3.5V13H3V1z"/><path d="M7.5 1v3H11"/><path d="M4 7h6M4 9.5h4"/></svg></div>
+    <div class="toast-title" id="toastTitle">Rapport 17h00 prêt</div>
+  </div>
+  <div class="toast-body" id="toastBody">Le rapport de fin de journée est généré et prêt à télécharger.</div>
+  <div class="toast-actions">
+    <button class="btn btn-dark" onclick="generateReport();document.getElementById('reportToast').classList.remove('visible')">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M1 12h12"/></svg>
+      Télécharger PDF
+    </button>
+    <button class="btn" onclick="document.getElementById('reportToast').classList.remove('visible')">Plus tard</button>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="#">
+      <div class="logo-mark"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M7 4v3l2 1"/></svg></div>
+      <span class="logo-name">Veille Tech & Normes</span>
+    </a>
+    <div class="topbar-right">
+      <div class="pulse-dot"></div>
+      <span class="live-txt">Live</span>
+      <span class="badge badge-tr" id="trBadge" style="display:none">🇫🇷 Traduction active</span>
+      <button class="badge badge-report" id="reportBadge" onclick="generateReport()" style="display:none" title="Générer le rapport PDF maintenant">
+        📄 Rapport du jour
+      </button>
+      <button class="btn" id="refreshBtn" onclick="refreshAll()">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7A5 5 0 1 1 7 2c1.6 0 3 .7 4 1.9M12 2v2.5h-2.5"/></svg>
+        Actualiser
+      </button>
+      <button class="btn btn-dark" id="manualReportBtn" onclick="generateReport()" disabled>
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 1h5.5L11 3.5V13H3V1z"/><path d="M7.5 1v3H11"/></svg>
+        PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- COUNTDOWN BAR -->
+<div class="countdown-bar">
+  <div class="countdown-inner">
+    <div class="countdown-left">
+      <div class="countdown-icon"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="5.5"/><path d="M7 4v3l2 1"/></svg></div>
+      <div class="countdown-txt">Rapport automatique à <strong>17h00</strong> — prochain dans</div>
+    </div>
+    <div class="countdown-timer" id="countdownTimer">--:--:--</div>
+  </div>
+</div>
+
+<!-- API KEY BANNER -->
+<div class="api-banner" id="apiBanner">
+  <div class="api-banner-inner">
+    <label for="apiKeyInput">Clé API Anthropic :</label>
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-api03-..." autocomplete="off"/>
+    <button class="btn btn-dark" onclick="saveKey()">Activer traduction + rapports IA</button>
+    <span class="api-hint">Clé gratuite sur <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> — nécessaire pour traduction & analyse IA des rapports</span>
+  </div>
+</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-wrap"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Veille <em>Tech</em><br>& <em>Normes</em></h1>
+    <div class="hero-stat" id="heroStat">Chargement…</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <aside class="sidebar">
+    <div class="sb-section">
+      <div class="sb-title">Catégories</div>
+      <div id="catList"></div>
+    </div>
+    <div class="sb-section">
+      <div class="sb-title">Sources actives</div>
+      <div id="sourceList"></div>
+    </div>
+    <div class="next-refresh" id="nextRefresh">Prochain refresh : —</div>
+  </aside>
+  <main>
+    <div class="feed-header">
+      <div class="feed-title" id="feedTitle">Tous les articles</div>
+      <div class="feed-meta" id="feedMeta"></div>
+    </div>
+    <div id="feedContent"></div>
+  </main>
+</div>
+
+<footer>
+  <span>Veille Tech & Normes — RSS temps réel · Traduction & rapports par Claude AI</span>
+  <span id="footerTs"></span>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════════════════
+const RSS2JSON      = 'https://api.rss2json.com/v1/api.json?rss_url=';
+const REFRESH_EVERY = 15 * 60 * 1000; // 15 min
+const REPORT_HOUR   = 17;
+const REPORT_MIN    = 0;
+
+const SOURCES = [
+  { name:'MIT Tech Review',       url:'https://www.technologyreview.com/feed/',                             cat:'ia',      lang:'en' },
+  { name:'The Verge AI',          url:'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml', cat:'ia',      lang:'en' },
+  { name:'VentureBeat AI',        url:'https://venturebeat.com/category/ai/feed/',                         cat:'ia',      lang:'en' },
+  { name:'ANSSI',                 url:'https://www.ssi.gouv.fr/feed/',                                     cat:'norm',    lang:'fr' },
+  { name:'CNIL',                  url:'https://www.cnil.fr/fr/rss.xml',                                    cat:'norm',    lang:'fr' },
+  { name:'Zataz',                 url:'https://www.zataz.com/feed/',                                       cat:'sec',     lang:'fr' },
+  { name:'The Hacker News',       url:'https://feeds.feedburner.com/TheHackersNews',                       cat:'sec',     lang:'en' },
+  { name:'Krebs on Security',     url:'https://krebsonsecurity.com/feed/',                                  cat:'sec',     lang:'en' },
+  { name:'InfoQ',                 url:'https://feed.infoq.com/',                                           cat:'infra',   lang:'en' },
+  { name:'Dev.to',                url:'https://dev.to/feed',                                               cat:'dev',     lang:'en' },
+  { name:'Towards Data Science',  url:'https://towardsdatascience.com/feed',                               cat:'data',    lang:'en' },
+  { name:'ZDNet FR',              url:'https://www.zdnet.fr/feeds/rss/actualites/',                        cat:'general', lang:'fr' },
+  { name:'Numerama',              url:'https://www.numerama.com/feed/',                                    cat:'general', lang:'fr' },
+  { name:'01net',                 url:'https://www.01net.com/rss/actualites/',                              cat:'general', lang:'fr' },
+  { name:'Le Monde Informatique', url:'https://www.lemondeinformatique.fr/flux-rss/thematique/toutes-les-actualites/rss.xml', cat:'general', lang:'fr' },
+];
+
+const CAT_META = {
+  ia:      { label:'IA & ML',             tag:'t-ia',      dot:'d-ia'      },
+  norm:    { label:'Normes & Réglements', tag:'t-norm',    dot:'d-norm'    },
+  sec:     { label:'Cybersécurité',       tag:'t-sec',     dot:'d-sec'     },
+  infra:   { label:'Infrastructure',      tag:'t-infra',   dot:'d-infra'   },
+  dev:     { label:'Dev & Open Source',   tag:'t-dev',     dot:'d-dev'     },
+  data:    { label:'Data & Analytics',    tag:'t-data',    dot:'d-data'    },
+  general: { label:'Tech Général',        tag:'t-general', dot:'d-general' },
+};
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let allArticles    = [];
+let activeFilter   = 'all';
+let apiKey         = localStorage.getItem('vtn_api_key') || '';
+let trCache        = {};
+let lastRefresh    = null;
+let nextRefreshAt  = null;
+let reportFiredToday = localStorage.getItem('vtn_report_date') === today();
+let refreshTimer, countdownTimer;
+
+function today() { return new Date().toISOString().slice(0,10); }
+
+// ═══════════════════════════════════════════════════════════════
+// API KEY
+// ═══════════════════════════════════════════════════════════════
+function saveKey() {
+  const k = document.getElementById('apiKeyInput').value.trim();
+  if (!k.startsWith('sk-')) { alert('Clé invalide — elle doit commencer par sk-ant-...'); return; }
+  apiKey = k;
+  localStorage.setItem('vtn_api_key', k);
+  document.getElementById('apiBanner').style.display = 'none';
+  document.getElementById('trBadge').style.display   = 'flex';
+  trCache = {};
+  refreshAll();
+}
+function initKey() {
+  if (apiKey.startsWith('sk-')) {
+    document.getElementById('apiBanner').style.display = 'none';
+    document.getElementById('trBadge').style.display   = 'flex';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COUNTDOWN & AUTO-REPORT
+// ═══════════════════════════════════════════════════════════════
+function startCountdown() {
+  if (countdownTimer) clearInterval(countdownTimer);
+  countdownTimer = setInterval(tickCountdown, 1000);
+  tickCountdown();
+}
+
+function tickCountdown() {
+  const now    = new Date();
+  const target = new Date();
+  target.setHours(REPORT_HOUR, REPORT_MIN, 0, 0);
+  if (now >= target) target.setDate(target.getDate() + 1);
+
+  const diff = target - now;
+  const h    = Math.floor(diff / 3600000);
+  const m    = Math.floor((diff % 3600000) / 60000);
+  const s    = Math.floor((diff % 60000) / 1000);
+  const str  = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const el   = document.getElementById('countdownTimer');
+  el.textContent = str;
+  el.classList.toggle('urgent', h === 0 && m < 30);
+
+  // Fire report at 17:00
+  const todayStr = today();
+  if (now.getHours() === REPORT_HOUR && now.getMinutes() === REPORT_MIN && now.getSeconds() < 5) {
+    if (localStorage.getItem('vtn_report_date') !== todayStr) {
+      localStorage.setItem('vtn_report_date', todayStr);
+      fireReportToast();
+    }
+  }
+}
+
+function fireReportToast() {
+  const ds = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('toastTitle').textContent = `Rapport ${REPORT_HOUR}h${String(REPORT_MIN).padStart(2,'0')} — ${ds}`;
+  document.getElementById('toastBody').textContent  = `${allArticles.length} articles collectés aujourd'hui. Le rapport complet est prêt à générer.`;
+  document.getElementById('reportToast').classList.add('visible');
+  setTimeout(() => document.getElementById('reportToast').classList.remove('visible'), 30000);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NEXT-REFRESH TICKER
+// ═══════════════════════════════════════════════════════════════
+function updateNextRefreshLabel() {
+  if (!nextRefreshAt) return;
+  const diff = Math.max(0, nextRefreshAt - Date.now());
+  const m = Math.floor(diff / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('nextRefresh').textContent =
+    `Prochain refresh dans ${m}m ${String(s).padStart(2,'0')}s`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TRANSLATE
+// ═══════════════════════════════════════════════════════════════
+async function translateBatch(texts) {
+  if (!apiKey.startsWith('sk-') || !texts.length) return texts;
+  const key = texts.join('|||');
+  if (trCache[key]) return trCache[key];
+  const numbered = texts.map((t,i) => `${i+1}. ${t}`).join('\n');
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'x-api-key':apiKey, 'anthropic-version':'2023-06-01' },
+      body: JSON.stringify({
+        model:'claude-haiku-4-5-20251001', max_tokens:2000,
+        messages:[{ role:'user', content:
+          `Traduis ces ${texts.length} textes en français naturel. Réponds UNIQUEMENT avec les traductions numérotées dans le même ordre, sans commentaire.\n\n${numbered}`
+        }]
+      })
+    });
+    if (!res.ok) return texts;
+    const d = await res.json();
+    const lines = (d.content[0]?.text||'').split('\n').filter(l=>l.match(/^\d+\./));
+    const result = texts.map((t,i) => lines[i]?.replace(/^\d+\.\s*/,'').trim() || t);
+    trCache[key] = result;
+    return result;
+  } catch { return texts; }
+}
+
+async function translateAll(onProgress) {
+  if (!apiKey.startsWith('sk-')) return;
+  const eng = allArticles.filter(a => a.lang==='en' && !a.titleFr);
+  if (!eng.length) return;
+  const BATCH = 12;
+  let done = 0;
+  for (let i=0; i<eng.length; i+=BATCH) {
+    const batch = eng.slice(i, i+BATCH);
+    const [titles, summaries] = await Promise.all([
+      translateBatch(batch.map(a=>a.title)),
+      translateBatch(batch.map(a=>a.summary)),
+    ]);
+    batch.forEach((a,j) => { a.titleFr=titles[j]||a.title; a.summaryFr=summaries[j]||a.summary; });
+    done += batch.length;
+    onProgress(done/eng.length);
+    renderFeed();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RSS FETCH
+// ═══════════════════════════════════════════════════════════════
+function stripHtml(h) {
+  const d=document.createElement('div'); d.innerHTML=h;
+  return (d.textContent||d.innerText||'').replace(/\s+/g,' ').trim();
+}
+
+async function fetchFeed(src) {
+  try {
+    const r = await fetch(RSS2JSON+encodeURIComponent(src.url)+'&count=12', { signal:AbortSignal.timeout(9000) });
+    if (!r.ok) return [];
+    const d = await r.json();
+    if (d.status!=='ok'||!d.items) return [];
+    return d.items.map(item => ({
+      title:     item.title||'',
+      titleFr:   null,
+      link:      item.link||'#',
+      summary:   stripHtml(item.description||item.content||'').slice(0,220),
+      summaryFr: null,
+      date:      item.pubDate ? new Date(item.pubDate) : new Date(),
+      source:    src.name,
+      cat:       src.cat,
+      lang:      src.lang,
+    }));
+  } catch { return []; }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+function timeAgo(d) {
+  const s=(Date.now()-d)/1000;
+  if(s<60)    return 'à l\'instant';
+  if(s<3600)  return Math.floor(s/60)+'min';
+  if(s<86400) return Math.floor(s/3600)+'h';
+  return Math.floor(s/86400)+'j';
+}
+
+function renderSidebar() {
+  const counts={};
+  allArticles.forEach(a=>{ counts[a.cat]=(counts[a.cat]||0)+1; });
+  const cats=[['all',null]].concat(Object.entries(CAT_META).filter(([k])=>counts[k]));
+  document.getElementById('catList').innerHTML=cats.map(([k,m])=>{
+    const label=k==='all'?'Tout':m.label;
+    const dot  =k==='all'?'d-general':m.dot;
+    const cnt  =k==='all'?allArticles.length:(counts[k]||0);
+    return `<button class="cat-btn${activeFilter===k?' active':''}" onclick="setFilter('${k}',this)">
+      <span class="dot ${dot}"></span><span>${label}</span><span class="cnt">${cnt}</span>
+    </button>`;
+  }).join('');
+  const sc={};
+  allArticles.forEach(a=>{sc[a.source]=(sc[a.source]||0)+1;});
+  document.getElementById('sourceList').innerHTML=Object.entries(sc)
+    .sort((a,b)=>b[1]-a[1]).slice(0,12)
+    .map(([n,c])=>`<div class="src-item"><span class="src-name">${n}</span><span class="src-cnt">${c}</span></div>`)
+    .join('')||'<span style="font-size:12px;color:var(--text3)">—</span>';
+}
+
+function renderFeed() {
+  const arts = activeFilter==='all' ? allArticles : allArticles.filter(a=>a.cat===activeFilter);
+  const catLabel = activeFilter==='all' ? 'Tous les articles' : (CAT_META[activeFilter]?.label||activeFilter);
+  document.getElementById('feedTitle').textContent=catLabel;
+  document.getElementById('feedMeta').textContent=`${arts.length} article${arts.length>1?'s':''}`;
+  if (!arts.length) {
+    document.getElementById('feedContent').innerHTML=`<div class="empty-state">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      <p>Aucun article chargé.<br>Vérifiez votre connexion et cliquez sur <strong>Actualiser</strong>.</p>
+    </div>`; return;
+  }
+  const hasKey=apiKey.startsWith('sk-');
+  document.getElementById('feedContent').innerHTML=`<div class="feed-grid">${arts.map(a=>{
+    const cm=CAT_META[a.cat]||CAT_META.general;
+    const title   = hasKey ? (a.titleFr||a.title)   : a.title;
+    const summary = hasKey ? (a.summaryFr||a.summary): a.summary;
+    const inTrans = hasKey && a.lang==='en' && !a.titleFr;
+    return `<a class="article" href="${a.link}" target="_blank" rel="noopener">
+      <div>
+        <div class="art-top">
+          <span class="cat-tag ${cm.tag}">${cm.label}</span>
+          <span class="src-tag">${a.source}</span>
+          ${a.lang==='fr'?'<span class="fr-flag">FR</span>':''}
+          <span class="art-time">${timeAgo(a.date)}</span>
+        </div>
+        <h3>${inTrans?'<span class="translating">Traduction en cours…</span>':title}</h3>
+        ${summary&&!inTrans?`<p>${summary}…</p>`:''}
+      </div>
+      <div class="art-arrow">›</div>
+    </a>`;
+  }).join('')}</div>`;
+}
+
+function setFilter(cat,el){
+  activeFilter=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderFeed();
+}
+
+function showSkeletons(){
+  document.getElementById('feedContent').innerHTML=`<div class="skel-list">${
+    Array(10).fill(`<div class="skel-item">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <div class="skel" style="width:80px;height:15px"></div>
+        <div class="skel" style="width:60px;height:15px"></div>
+        <div class="skel" style="width:35px;height:15px"></div>
+      </div>
+      <div class="skel" style="width:88%;height:14px;margin-bottom:6px"></div>
+      <div class="skel" style="width:60%;height:14px;margin-bottom:10px"></div>
+      <div class="skel" style="width:100%;height:11px;margin-bottom:4px"></div>
+      <div class="skel" style="width:75%;height:11px"></div>
+    </div>`).join('')
+  }</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GENERATE PDF REPORT
+// ═══════════════════════════════════════════════════════════════
+async function generateReport() {
+  if (!allArticles.length) { alert('Aucun article chargé. Actualisez d\'abord.'); return; }
+
+  const btn = document.getElementById('manualReportBtn');
+  btn.disabled=true; btn.textContent='Génération…';
+
+  const now = new Date();
+  const ds  = now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const ts  = now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+
+  // If API key, generate AI analysis; else use static summary
+  let analysis = null;
+  if (apiKey.startsWith('sk-')) {
+    try {
+      const top20 = allArticles.slice(0,20);
+      const artTxt = top20.map((a,i)=>`${i+1}. [${a.cat.toUpperCase()}] ${a.titleFr||a.title}\n   ${a.summaryFr||a.summary}\n   Source: ${a.source}`).join('\n\n');
+      const res = await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},
+        body:JSON.stringify({
+          model:'claude-sonnet-4-20250514', max_tokens:2500,
+          messages:[{role:'user',content:
+            `Tu es un analyste expert en veille technologique. Voici les articles collectés le ${ds} :\n\n${artTxt}\n\nGénère une analyse en JSON valide (sans markdown) :\n{"resume":"3-4 phrases sur les grandes tendances du jour","chiffre_cle":"Un fait marquant chiffré","top5":[{"rang":1,"titre":"...","pourquoi":"1 phrase expliquant l'importance"}],"tendances":[{"titre":"...","desc":"2 phrases","horizon":"Court|Moyen|Long terme"}],"alertes_normes":[{"norme":"...","statut":"En vigueur|En cours|À surveiller","desc":"1-2 phrases","urgence":"haute|moyenne|faible"}],"recommandations":["...","...","..."]}`
+          }]
+        })
+      });
+      const d = await res.json();
+      analysis = JSON.parse(d.content[0]?.text.replace(/```json|```/g,'').trim());
+    } catch(e){ console.warn('AI analysis failed',e); }
+  }
+
+  buildAndPrintPDF(analysis, ds, ts);
+  btn.disabled=false; btn.innerHTML='<svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 1h5.5L11 3.5V13H3V1z"/><path d="M7.5 1v3H11"/></svg> PDF';
+}
+
+function buildAndPrintPDF(analysis, ds, ts) {
+  const impC={haute:'#A32D2D',moyenne:'#854F0B',faible:'#3B6D11'};
+  const urgC={haute:'#A32D2D',moyenne:'#854F0B',faible:'#3B6D11'};
+  const catNames={ia:'IA & ML',norm:'Normes & Réglementation',infra:'Infrastructure',sec:'Cybersécurité',data:'Data & Analytics',dev:'Dev & Open Source',general:'Tech Général'};
+
+  const grouped={};
+  allArticles.slice(0,60).forEach(a=>{ if(!grouped[a.cat]) grouped[a.cat]=[]; grouped[a.cat].push(a); });
+
+  // ── TOP 5 ──
+  const top5 = analysis?.top5 || allArticles.slice(0,5).map((a,i)=>({rang:i+1,titre:a.titleFr||a.title,pourquoi:'Article sélectionné parmi les plus récents.'}));
+
+  const top5Html = top5.map(t=>`
+    <div style="display:flex;gap:12px;margin-bottom:12px;padding:10px 12px;border:1px solid #e8e8e4;border-radius:6px;page-break-inside:avoid">
+      <div style="font-size:22px;font-weight:700;color:#ccc;min-width:28px;line-height:1.2">${t.rang}</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:3px">${t.titre}</div>
+        <div style="font-size:12px;color:#555">${t.pourquoi}</div>
+      </div>
+    </div>`).join('');
+
+  // ── TENDANCES ──
+  const tendHtml = (analysis?.tendances||[]).map(t=>`
+    <div style="margin-bottom:12px;padding:10px 14px;border-left:3px solid #18181A;background:#f8f8f6;border-radius:0 6px 6px 0">
+      <div style="font-weight:700;font-size:13px;margin-bottom:3px">${t.titre} <span style="font-size:10px;color:#888;font-weight:400;margin-left:6px">${t.horizon}</span></div>
+      <div style="font-size:12px;color:#444;line-height:1.6">${t.desc}</div>
+    </div>`).join('') || '<p style="font-size:12px;color:#888">Activez la clé API pour l\'analyse IA des tendances.</p>';
+
+  // ── NORMES ──
+  const normRows = (analysis?.alertes_normes||[]).map(n=>`
+    <tr>
+      <td style="padding:7px 9px;border-bottom:1px solid #eee;font-weight:600;font-size:12px">${n.norme}</td>
+      <td style="padding:7px 9px;border-bottom:1px solid #eee;font-size:12px;color:#444">${n.desc}</td>
+      <td style="padding:7px 9px;border-bottom:1px solid #eee;text-align:center">
+        <span style="background:${urgC[n.urgence]||'#555'};color:#fff;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700">${n.statut}</span>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="3" style="padding:8px;color:#888;font-size:12px">Activez la clé API pour les alertes normes.</td></tr>';
+
+  // ── RECOS ──
+  const recoHtml = (analysis?.recommandations||[]).map((r,i)=>`
+    <div style="display:flex;gap:10px;margin-bottom:9px;padding:9px 12px;background:#f8f8f6;border-radius:5px">
+      <span style="font-weight:700;min-width:20px;color:#18181A">${i+1}.</span>
+      <span style="font-size:12px;color:#333;line-height:1.5">${r}</span>
+    </div>`).join('') || '<p style="font-size:12px;color:#888">Activez la clé API pour les recommandations IA.</p>';
+
+  // ── ALL ARTICLES ──
+  const artHtml = Object.entries(grouped).map(([cat,arts])=>`
+    <h3 style="font-size:13px;font-weight:700;margin:18px 0 8px;padding:5px 10px;background:#f0f0ec;border-radius:4px">${catNames[cat]||cat}</h3>
+    ${arts.map(a=>`
+    <div style="margin-bottom:10px;padding:9px 12px;border:1px solid #e8e8e4;border-radius:5px;page-break-inside:avoid">
+      <div style="font-size:13px;font-weight:700;margin-bottom:3px">${a.titleFr||a.title}</div>
+      <div style="font-size:11px;color:#555;line-height:1.6;margin-bottom:4px">${a.summaryFr||a.summary}</div>
+      <div style="font-size:10px;color:#888;font-style:italic">${a.source} · ${a.date.toLocaleDateString('fr-FR')}</div>
+    </div>`).join('')}`).join('');
+
+  const kpi = [
+    ['Articles collectés', String(allArticles.length)],
+    ['Sources actives', String(SOURCES.length)],
+    ['Articles IA', String(allArticles.filter(a=>a.cat==='ia').length)],
+    ['Alertes normes', String(allArticles.filter(a=>a.cat==='norm').length)],
+  ];
+
+  const html = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+  <title>Rapport Veille — ${ds}</title>
+  <style>
+    body{font-family:Arial,sans-serif;color:#18181A;margin:0;font-size:13px;}
+    @page{margin:16mm 18mm 20mm 18mm;size:A4;}
+    h2{font-size:15px;font-weight:700;margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid #18181A;}
+    table{width:100%;border-collapse:collapse;}
+    th{background:#f0f0ec;padding:7px 9px;text-align:left;font-size:11px;font-weight:700;border-bottom:2px solid #ddd;}
+    .footer{position:fixed;bottom:0;left:0;right:0;border-top:1px solid #ddd;padding:5px 18mm;font-size:10px;color:#aaa;display:flex;justify-content:space-between;background:#fff;}
+  </style></head><body>
+  <div class="footer">
+    <span>Veille Tech & Normes — Rapport automatique 17h00 · Claude AI</span>
+    <span>${ds}</span>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #18181A;padding-bottom:12px;margin-bottom:20px">
+    <div>
+      <div style="font-size:10px;color:#888;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px">Rapport de Veille — 17h00</div>
+      <div style="font-size:26px;font-weight:700;letter-spacing:-.5px">Tech & Normes</div>
+      <div style="font-size:11px;color:#888;margin-top:3px">${ds} · Généré à ${ts} · ${allArticles.length} articles</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:10px;color:#aaa">Alimenté par</div>
+      <div style="font-size:14px;font-weight:700">Claude AI</div>
+      <div style="font-size:10px;color:#aaa">Anthropic</div>
+    </div>
+  </div>
+
+  <h2>1 — Résumé Exécutif</h2>
+  <div style="background:#18181A;color:#fff;padding:14px 18px;border-radius:6px;margin-bottom:14px">
+    <p style="font-size:13px;line-height:1.75;margin:0">${analysis?.resume||'Rapport généré sans analyse IA. Activez la clé API Anthropic pour le résumé exécutif automatique.'}</p>
+  </div>
+  ${analysis?.chiffre_cle?`<div style="border:1px solid #e8e8e4;border-radius:6px;padding:9px 13px;margin-bottom:14px;background:#fafaf8">
+    <div style="font-size:9px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">Chiffre Clé du Jour</div>
+    <div style="font-size:13px;font-weight:700">${analysis.chiffre_cle}</div>
+  </div>`:''}
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+    ${kpi.map(([l,v])=>`<div style="flex:1;min-width:90px;background:#f8f8f6;border:1px solid #e8e8e4;border-radius:6px;padding:9px 12px;text-align:center">
+      <div style="font-size:24px;font-weight:700">${v}</div>
+      <div style="font-size:10px;color:#888">${l}</div>
+    </div>`).join('')}
+  </div>
+
+  <h2>2 — Top 5 Articles du Jour</h2>
+  ${top5Html}
+
+  <h2>3 — Analyse des Tendances</h2>
+  ${tendHtml}
+
+  <h2>4 — Alertes Normes & Réglementation</h2>
+  <table><thead><tr><th>Norme</th><th>Description</th><th style="width:110px;text-align:center">Statut</th></tr></thead>
+  <tbody>${normRows}</tbody></table>
+
+  <h2>5 — Recommandations</h2>
+  ${recoHtml}
+
+  <div style="page-break-before:always"></div>
+  <h2>6 — Tous les Articles Collectés</h2>
+  ${artHtml}
+
+  </body></html>`;
+
+  const win = window.open('','_blank');
+  if (!win) { alert('Autorisez les popups pour générer le PDF.'); return; }
+  win.document.write(html);
+  win.document.close();
+  win.onload = ()=> setTimeout(()=>{ win.focus(); win.print(); }, 600);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MAIN REFRESH
+// ═══════════════════════════════════════════════════════════════
+async function refreshAll() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spin'); btn.disabled=true;
+  document.getElementById('manualReportBtn').disabled=true;
+  document.getElementById('heroStat').textContent='Chargement des flux RSS…';
+  trCache={};
+  showSkeletons();
+  allArticles=[];
+
+  const results = await Promise.all(SOURCES.map(s=>fetchFeed(s)));
+  results.forEach(items=>allArticles.push(...items));
+  allArticles.sort((a,b)=>b.date-a.date);
+
+  lastRefresh  = Date.now();
+  nextRefreshAt= Date.now() + REFRESH_EVERY;
+
+  const now=new Date();
+  const ts =now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  const ds =now.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+  const enCount = allArticles.filter(a=>a.lang==='en').length;
+
+  document.getElementById('heroStat').innerHTML=
+    `<strong>${allArticles.length}</strong> articles · <strong>${SOURCES.length}</strong> sources<br>${ds} · MAJ ${ts}`+
+    (apiKey.startsWith('sk-')?`<br><strong>${enCount}</strong> en cours de traduction`:'');
+  document.getElementById('footerTs').textContent=`MAJ : ${ts} · Prochain : +15min`;
+  document.getElementById('reportBadge').style.display='flex';
+  document.getElementById('manualReportBtn').disabled=false;
+
+  renderSidebar();
+  renderFeed();
+
+  // Translate
+  if (apiKey.startsWith('sk-')) {
+    const pf=document.getElementById('progressFill');
+    pf.style.width='0%';
+    await translateAll(pct=>{ pf.style.width=Math.round(pct*100)+'%'; });
+    pf.style.width='0%';
+    renderSidebar(); renderFeed();
+  }
+
+  btn.classList.remove('spin'); btn.disabled=false;
+
+  // Schedule next refresh
+  if (refreshTimer) clearTimeout(refreshTimer);
+  refreshTimer = setTimeout(refreshAll, REFRESH_EVERY);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+initKey();
+startCountdown();
+setInterval(updateNextRefreshLabel, 1000);
+refreshAll();
+</script>
+</body>
+</html>
